@@ -1,9 +1,8 @@
 <?php
 
-namespace Contentstack\Stack\ContentType\BaseQuery;
+namespace Contentstack\Models\ContentType;
 
-
-require_once __DIR__ . "/../helper.php";
+use Contentstack\Support\Utility;
 
 /*
  * BaseQuery
@@ -19,7 +18,7 @@ abstract class BaseQuery {
             $this->queryObject = $parent;
             $this->queryObject->_query = array();
             $this->subQuery = array();
-            
+
         }elseif ($data->type === 'asset'){
             $this->stack = $data;
             $this->queryObject = $parent;
@@ -29,7 +28,7 @@ abstract class BaseQuery {
             $this->contentType = $data;
             $this->queryObject = $parent;
             $this->queryObject->_query = array();
-            $this->subQuery = array();        
+            $this->subQuery = array();
         }
     }
 
@@ -94,13 +93,13 @@ abstract class BaseQuery {
      * @param
      *      $field_uid - field on which the regular expression test is going to perform
      *      $regex - Regular Expression Object
-     * @return 
+     * @return
      * */
     public function regex() {
         $this->subQuery = call_user_func_array('contentstackRegexp', array('$regex', $this->subQuery, func_get_args()));
         return $this->queryObject;
     }
-    
+
     /*
      * logicalAND
      * Logical AND queries are pushed
@@ -251,8 +250,8 @@ abstract class BaseQuery {
      *      langCode - Language code by default is "en-us"
      * @return Query
      * */
-    public function language($lang = '') {
-        $this->queryObject->_query = call_user_func('contentstackLanguage', $this->queryObject->_query, 'locale', $lang);
+    public function language($lang = 'en-us') {
+        $this->queryObject->_query = call_user_func('contentstackLanguage', 'locale', $this->queryObject->_query, $lang);
         return $this->queryObject;
     }
     /*
@@ -326,7 +325,7 @@ abstract class BaseQuery {
      * @return Query
      * */
     public function where($key = '', $value = '') {
-        if(!\Contentstack\Utility\isEmpty($key)) $this->subQuery[$key] = $value;
+        if(!Utility::isEmpty($key)) $this->subQuery[$key] = $value;
         return $this->queryObject;
     }
 
@@ -414,5 +413,5 @@ abstract class BaseQuery {
         } catch(\Exception $e) {
             echo $e->getMessage();
         }
-    }   
+    }
 }

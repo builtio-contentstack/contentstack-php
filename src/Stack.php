@@ -1,14 +1,11 @@
 <?php
-namespace Contentstack\Stack;
+namespace Contentstack;
 
-use Contentstack\Utility;
-use Contentstack\Stack\ContentType\ContentType;
-use Contentstack\Stack\Assets\Assets;
+use Contentstack\Models\Assets;
+use Contentstack\Support\Utility;
+use Contentstack\Models\ContentType;
 
-require_once __DIR__."/content_type.php";
-require_once __DIR__."/assets.php";
-//require_once __DIR__."/asset.php";
-require_once __DIR__."/../../config/index.php";
+require_once __DIR__ . "/config.php";
 
 /*
  * Stack Class to initialize the provided parameter Stack
@@ -29,7 +26,7 @@ class Stack {
      * Constructor of the Stack
      * */
     public function __construct($api_key = '', $access_token = '', $environment = '') {
-        $this->header = Utility\validateInput('stack', array('api_key' => $api_key, 'access_token' => $access_token, 'environment' => $environment));
+        $this->header = Utility::validateInput('stack', array('api_key' => $api_key, 'access_token' => $access_token, 'environment' => $environment));
         $this->environment = $this->header['environment'];
         unset($this->header['environment']);
         return $this;
@@ -41,7 +38,7 @@ class Stack {
      *      string|contentTypeId - valid content type uid relevant to configured stack
      * @return ContentType
      * */
-    public function ContentType($contentTypeId = '') { 
+    public function ContentType($contentTypeId = '') {
         return new ContentType($contentTypeId, $this);
     }
 
@@ -61,23 +58,23 @@ class Stack {
       /*
          * ImageTrasform
          * ImageTrasform function is define for image manipulation with different
-         * parameters in second parameter in array form 
-         * @param url : Image url on which we want to manipulate. 
+         * parameters in second parameter in array form
+         * @param url : Image url on which we want to manipulate.
          * @param parameters : It is an second parameter in which we want to place different manipulation key and value in array form
-         *      
-         * */    
-    public function ImageTrasform($url, $parameters){     
+         *
+         * */
+    public function ImageTrasform($url, $parameters){
         if (is_string($url) === TRUE && strlen($url) > 0 && is_array($parameters) === TRUE && count($parameters) > 0) {
             $params = array();
             foreach($parameters as $key => $value){
                 array_push($params, $key . '=' .$value);
-            }         
+            }
             $params = implode("&", $params);
             $url = (strpos($url, '?') === FALSE) ? $url .'?'.$params: $url .'&'.$params;
             return $url;
         } else {
-            \Contentstack\Utility\debug("Please provide valid url and array of transformation parameters.");
-        }                                   
+            Utility::debug("Please provide valid url and array of transformation parameters.");
+        }
     }
 
 
@@ -88,7 +85,7 @@ class Stack {
      * */
     public function getLastActivities() {
         $this->_query = array("only_last_activity" => "true");
-        return Utility\getLastActivites($this);
+        return Utility::getLastActivites($this);
     }
 
     /*
@@ -98,7 +95,7 @@ class Stack {
      * @return Stack
      * */
     public function setHost($host = '') {
-        Utility\validateInput('host', $host);
+        Utility::validateInput('host', $host);
         $this->host = $host;
         return $this;
     }
@@ -108,7 +105,7 @@ class Stack {
     }
 
     public function setProtocol($protocol = '') {
-        Utility\validateInput('protocol', $protocol);
+        Utility::validateInput('protocol', $protocol);
         $this->protocol = $protocol;
         return $this;
     }
@@ -118,7 +115,7 @@ class Stack {
     }
 
     public function setPort($port = '') {
-        Utility\validateInput('port', $port);
+        Utility::validateInput('port', $port);
         $this->port = $port;
         return $this;
     }
@@ -128,23 +125,23 @@ class Stack {
     }
 
     public function setAPIKEY($api_key = '') {
-        Utility\validateInput('api_key', $api_key);
+        Utility::validateInput('api_key', $api_key);
         $this->header['api_key'] = $api_key;
         return $this;
     }
 
     public function setAccessToken($access_token = '') {
-        Utility\validateInput('access_token', $access_token);
+        Utility::validateInput('access_token', $access_token);
         $this->header['access_token'] = $access_token;
         return $this;
     }
 
     public function setEnvironment($environment = '') {
-        Utility\validateInput('environment', $environment);
+        Utility::validateInput('environment', $environment);
         $this->environment = $environment;
         return $this;
     }
-    
+
     public function getAPIKEY() {
         return $this->header['api_key'];
     }
